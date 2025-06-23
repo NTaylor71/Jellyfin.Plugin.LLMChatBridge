@@ -62,7 +62,7 @@ If no custom prompt is set, the following will be used:
 Create .env
 
 ```bash
-cp .env.example .#!/usr/bin/env
+cp .env.example .env
 ```
 
 Edit .env & set to the folder your jellyfin uses for plugins
