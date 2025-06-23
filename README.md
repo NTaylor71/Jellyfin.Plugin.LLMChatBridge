@@ -132,7 +132,7 @@ Python fuzzywuzzy will attempt to match chat replies to local media
 
 		* Jellyfin's db is thus RAG'ified by LangChain
 
-	* Python uses fuzzywuzzy to spot known media content in replies from ollama-LancgChain and present them as Jellyfin links for users to select
+	* Python uses fuzzywuzzy to spot known media content in replies from ollama-LangChain and present them as Jellyfin links for users to select
 
 	* The plugin provides settings for 2 Jelly-Ollama servers, Primary and Secondary
 
