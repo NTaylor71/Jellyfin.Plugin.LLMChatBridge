@@ -41,9 +41,10 @@ To configure:
 1. Open **Dashboard → Plugins → LLMChatBridge**
 2. Enter your:
    - **Primary URL**: e.g. `http://localhost:11434`
-   - **Primary Model**: e.g. `llama3`
+   - **Primary Model**: e.g. `llama3.2:3b`
+   - **Secondary Model**: e.g. `llama3.2:1b`
    - **System Prompt**: Optional, fallback to default persona
-   - Optional: Secondary endpoint, model, and prompt
+   - Optional: Secondary endpoint, and prompt
 3. Save the form
 
 ---
