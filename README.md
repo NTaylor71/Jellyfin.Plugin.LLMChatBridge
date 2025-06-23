@@ -65,7 +65,8 @@ Create .env
 cp .env.example .env
 ```
 
-Edit .env & set to the folder your jellyfin uses for plugins
+Edit .env & set to the custom-setup-by-you folder that your jellyfin uses for plugins
+
 ```
 PLUGIN_MOUNT=<your path to>/jellyfin-plugins
 ```
@@ -89,7 +90,7 @@ or for powershell users
 
 ## The wider eco system
 
-This plugin is 1 of 3 components designed to add a RAG based prompt to Jellyfin that's an expert at your media collection and can make reccomendations to users via chat, ...or justhelp with their homework.
+This plugin is 1 of 3 components designed to add a RAG based prompt to Jellyfin that's an expert at your media collection and can make reccomendations to users via chat, ...or just chit chat about anything at all
 
 Reply sophistication : Prompt replies will reflect the size of the model you can run anywhere on your local LAN
 
@@ -110,7 +111,7 @@ Python fuzzywuzzy will attempt to match chat replies to local media
 
    #TODO : Remove custom branding
 
-2. This plugin
+2. THIS plugin
 
 	* Contains your local admin secrets to talk to one or more Ollama servers
 
@@ -123,11 +124,11 @@ Python fuzzywuzzy will attempt to match chat replies to local media
 
 	* Contains : Ollama, Python 3.12 + Langchain, postgres/redis
 
-	* Chat request message are queued
+	* Chat request message are async-queued
 
 	* Queue proccessed via python/Langchain that utilize RAG
 
-	* RAG data is provided via a schedule in Jellyfin from this plugin
+	* RAG data is provided via a schedule in Jellyfin from THIS plugin
 
 		* Jellyfin's db is thus RAG'ified by LangChain
 
