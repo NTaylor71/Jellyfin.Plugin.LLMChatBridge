@@ -119,9 +119,9 @@ Python fuzzywuzzy will attempt to match chat replies to local media
 	* Chat access is added for all users
 
 
-3. A docker image called : Jelly-Ollama
+3. A docker image called : Jellyfin.Llm.Chat
 
-	* Contains : Ollama, Python 3.12, Langchain, postgres/redis
+	* Contains : Ollama, Python 3.12 + Langchain, postgres/redis
 
 	* Chat request message are queued
 
@@ -129,17 +129,17 @@ Python fuzzywuzzy will attempt to match chat replies to local media
 
 	* RAG data is provided via a schedule in Jellyfin from this plugin
 
-		* Jellyfin's db is RAG'ified 
+		* Jellyfin's db is thus RAG'ified by LangChain
 
-	* Python uses fuzzywuzzy to spot known media content in replies from ollama and present them as Jellyfin links for users to use
+	* Python uses fuzzywuzzy to spot known media content in replies from ollama-LancgChain and present them as Jellyfin links for users to select
 
 	* The plugin provides settings for 2 Jelly-Ollama servers, Primary and Secondary
 
-		* Primary : A fast sometime-on desktop with a large GPU
+		* Primary : eg A fast sometime-on desktop with a large GPU
 
 			* can run bigger models
 
-		* Secondary : An always on machine (NAS) 
+		* Secondary : eg An always on machine (NAS) 
 
 			* likely can run only small models
 
