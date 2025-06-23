@@ -1,4 +1,4 @@
-# LLMChatBridge (WIP)
+# Jellyfin.Plugin.LLMChatBridge (WIP)
 
 ```
  ________            __    ____        __   __               
@@ -12,7 +12,7 @@
 
 ## Overview
 
-**LLMChatBridge** is a Jellyfin plugin that enables chat-based interactions with a local or remote LLM (e.g., Ollama). It connects Jellyfin users to AI-powered media recommendations and answers via a configurable chat UI backed by one or more LLM endpoints.
+**Jellyfin.Plugin.LLMChatBridge** is a Jellyfin plugin that enables chat-based interactions with a local or remote LLM (e.g., Ollama). It connects Jellyfin users to AI-powered media recommendations and answers via a configurable chat UI backed by one or more LLM endpoints.
 
 - Supports **primary** and **secondary** LLM endpoints
 - Customize model, system prompt, and timeout behavior
