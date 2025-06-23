@@ -1,0 +1,7 @@
+.venv
+.env
+.idea/
+.vs
+Jellyfin.Plugin.LLMChatBridge/bin/
+Jellyfin.Plugin.LLMChatBridge/obj/
+old

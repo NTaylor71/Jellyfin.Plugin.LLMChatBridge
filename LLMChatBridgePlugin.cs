@@ -1,1 +1,0 @@
-<LLMChatBridgePlugin.cs content here>
