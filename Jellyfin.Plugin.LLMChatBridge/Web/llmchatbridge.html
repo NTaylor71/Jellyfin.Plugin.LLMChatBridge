@@ -1,39 +1,50 @@
-<div id="LLMChatBridgeConfigPage" data-role="page" class="page type-interior pluginConfigurationPage">
+<div id="LLMChatBridgeConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-controller="__plugin/llmchatbridgejs">
     <div data-role="content">
         <div class="content-primary">
-            <form id="configForm">
-                <h2 class="sectionTitle">LLM ChatBridge Plugin Settings</h2>
+            <form id="LLMChatBridgeConfigForm">
+                <h2 class="sectionTitle sectionTitle-cards">
+                    <b>Configure your Local LLM ChatBridge</b>
+                </h2>
 
                 <div class="inputContainer">
                     <input is="emby-input" type="text" id="PrimaryUrl" label="Primary LLM URL" />
+                    <div class="fieldDescription">Base URL of your primary Ollama or compatible LLM endpoint (e.g., http://192.X.X.X:11434)</div>
                 </div>
 
                 <div class="inputContainer">
                     <input is="emby-input" type="text" id="PrimaryModel" label="Primary Model" />
+                    <div class="fieldDescription">Model name to use (e.g., llama3, codellama, mistral, etc.)</div>
                 </div>
 
                 <div class="inputContainer">
-                    <textarea is="emby-textarea" id="PrimarySystemPrompt" label="Primary System Prompt"></textarea>
+                    <label for="PrimarySystemPrompt" class="inputLabel">Primary System Prompt</label>
+                    <textarea is="emby-textarea" id="PrimarySystemPrompt" rows="8" style="width: 100%;"></textarea>
+                    <div class="fieldDescription">System prompt injected into all requests. Default prompt will be used if left blank.</div>
                 </div>
 
                 <div class="inputContainer">
                     <input is="emby-input" type="text" id="SecondaryUrl" label="Secondary LLM URL" />
+                    <div class="fieldDescription">Optional fallback LLM endpoint URL (e.g., http://localhost:11434 if on same NAS as your Jellyfin Server)</div>
                 </div>
 
                 <div class="inputContainer">
                     <input is="emby-input" type="text" id="SecondaryModel" label="Secondary Model" />
+                    <div class="fieldDescription">Fallback model name. Leave blank to use primary model.</div>
                 </div>
 
                 <div class="inputContainer">
-                    <textarea is="emby-textarea" id="SecondarySystemPrompt" label="Secondary System Prompt"></textarea>
+                    <label for="SecondarySystemPrompt" class="inputLabel">Secondary System Prompt</label>
+                    <textarea is="emby-textarea" id="SecondarySystemPrompt" rows="8" style="width: 100%;"></textarea>
+                    <div class="fieldDescription">Optional fallback system prompt. Leave blank to reuse the primary prompt or default.</div>
                 </div>
 
                 <div class="inputContainer">
                     <input is="emby-input" type="number" id="TimeoutMs" label="Fallback Timeout (ms)" min="100" max="30000" />
+                    <div class="fieldDescription">Time in milliseconds to wait before falling back to the secondary model (default: 3000)</div>
                 </div>
 
                 <div>
-                    <button is="emby-button" type="submit" class="raised button-submit block">
+                    <button id="save-button" is="emby-button" type="submit" class="raised button-submit block">
                         <span>Save</span>
                     </button>
                 </div>
@@ -41,43 +52,3 @@
         </div>
     </div>
 </div>
-
-<script type="text/javascript">
-    const pluginId = "2e1cf23a-e3b3-45b2-a385-50749ff90352";
-    const defaultPrompt = `You are a media expert. You specialising in recommending Movies, TV, Music, Audiobooks, Books and Comics. Be friendly and helpful. Pay attention to user queries about titles, genres, tags, release dates/years, actors, directors and plots. Your personality is a Surfer Dude who happens to be a psychedelic Llama with a sly sense of humour. Try to be personal in your replies. Your replies are ideally a little chatty and bullet points lists of (film/tv/book/etc) suggestions.`;
-
-    function loadConfig() {
-        ApiClient.getPluginConfiguration(pluginId).then(config => {
-            document.getElementById("PrimaryUrl").value = config.PrimaryUrl || "";
-            document.getElementById("PrimaryModel").value = config.PrimaryModel || "";
-            document.getElementById("PrimarySystemPrompt").value = config.PrimarySystemPrompt || defaultPrompt;
-            document.getElementById("SecondaryUrl").value = config.SecondaryUrl || "";
-            document.getElementById("SecondaryModel").value = config.SecondaryModel || "";
-            document.getElementById("SecondarySystemPrompt").value = config.SecondarySystemPrompt || defaultPrompt;
-            document.getElementById("TimeoutMs").value = config.TimeoutMs || 3000;
-        });
-    }
-
-    function saveConfig(e) {
-        e.preventDefault();
-
-        const config = {
-            PrimaryUrl: document.getElementById("PrimaryUrl").value,
-            PrimaryModel: document.getElementById("PrimaryModel").value,
-            PrimarySystemPrompt: document.getElementById("PrimarySystemPrompt").value,
-            SecondaryUrl: document.getElementById("SecondaryUrl").value,
-            SecondaryModel: document.getElementById("SecondaryModel").value,
-            SecondarySystemPrompt: document.getElementById("SecondarySystemPrompt").value,
-            TimeoutMs: parseInt(document.getElementById("TimeoutMs").value) || 3000
-        };
-
-        ApiClient.updatePluginConfiguration(pluginId, config).then(() => {
-            Dashboard.alert("Settings saved.");
-        });
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        loadConfig();
-        document.getElementById("configForm").addEventListener("submit", saveConfig);
-    });
-</script>
