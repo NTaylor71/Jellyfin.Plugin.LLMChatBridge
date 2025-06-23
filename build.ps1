@@ -6,6 +6,22 @@ $PluginName = "LLMChatBridge"
 $ProjectFile = "Jellyfin.Plugin.$PluginName\Jellyfin.Plugin.$PluginName.csproj"
 $BuildOutputDir = "Jellyfin.Plugin.$PluginName\bin\Release\net8.0"
 
+# Ensure dotnet is installed and matches SDK requirement
+$dotnetVersion = & dotnet --version 2>$null
+if (-not $dotnetVersion) {
+    Write-Host "ERROR: .NET SDK is not installed or not on PATH." -ForegroundColor Red
+    exit 1
+}
+if (-not ($dotnetVersion.StartsWith("8.") -or $dotnetVersion.StartsWith("9."))) {
+    Write-Host "WARNING: Expected .NET SDK 8.x or compatible, but found $dotnetVersion" -ForegroundColor Yellow
+}
+
+# Warn if running in PowerShell 5
+if ($PSVersionTable.PSVersion.Major -lt 7) {
+    Write-Host "ERROR: Please run this script in PowerShell 7+. Current version: $($PSVersionTable.PSVersion)" -ForegroundColor Red
+    exit 1
+}
+
 Write-Host "Building $PluginName Plugin..." -ForegroundColor Cyan
 
 # Load environment variables
@@ -86,4 +102,5 @@ Get-ChildItem $ResolvedBuildDir -Filter "Jellyfin.Plugin.$PluginName.*" | ForEac
     Write-Host "Copied: $($_.Name) -> $TargetDir" -ForegroundColor Green
 }
 
-Write-Host "`nBuild and deployment complete." -ForegroundColor Green
+Write-Host ""
+Write-Host "Build and deployment complete." -ForegroundColor Green
