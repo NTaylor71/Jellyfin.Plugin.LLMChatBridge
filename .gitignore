@@ -1,0 +1,5 @@
+.env
+./Jellyfin.Plugin.LLMChatBridge/obj/*
+./Jellyfin.Plugin.LLMChatBridge/bin/*
+./old
+.vs

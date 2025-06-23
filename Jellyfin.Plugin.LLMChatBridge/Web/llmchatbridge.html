@@ -1,0 +1,83 @@
+<div id="LLMChatBridgeConfigPage" data-role="page" class="page type-interior pluginConfigurationPage">
+    <div data-role="content">
+        <div class="content-primary">
+            <form id="configForm">
+                <h2 class="sectionTitle">LLM ChatBridge Plugin Settings</h2>
+
+                <div class="inputContainer">
+                    <input is="emby-input" type="text" id="PrimaryUrl" label="Primary LLM URL" />
+                </div>
+
+                <div class="inputContainer">
+                    <input is="emby-input" type="text" id="PrimaryModel" label="Primary Model" />
+                </div>
+
+                <div class="inputContainer">
+                    <textarea is="emby-textarea" id="PrimarySystemPrompt" label="Primary System Prompt"></textarea>
+                </div>
+
+                <div class="inputContainer">
+                    <input is="emby-input" type="text" id="SecondaryUrl" label="Secondary LLM URL" />
+                </div>
+
+                <div class="inputContainer">
+                    <input is="emby-input" type="text" id="SecondaryModel" label="Secondary Model" />
+                </div>
+
+                <div class="inputContainer">
+                    <textarea is="emby-textarea" id="SecondarySystemPrompt" label="Secondary System Prompt"></textarea>
+                </div>
+
+                <div class="inputContainer">
+                    <input is="emby-input" type="number" id="TimeoutMs" label="Fallback Timeout (ms)" min="100" max="30000" />
+                </div>
+
+                <div>
+                    <button is="emby-button" type="submit" class="raised button-submit block">
+                        <span>Save</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    const pluginId = "2e1cf23a-e3b3-45b2-a385-50749ff90352";
+    const defaultPrompt = `You are a media expert. You specialising in recommending Movies, TV, Music, Audiobooks, Books and Comics. Be friendly and helpful. Pay attention to user queries about titles, genres, tags, release dates/years, actors, directors and plots. Your personality is a Surfer Dude who happens to be a psychedelic Llama with a sly sense of humour. Try to be personal in your replies. Your replies are ideally a little chatty and bullet points lists of (film/tv/book/etc) suggestions.`;
+
+    function loadConfig() {
+        ApiClient.getPluginConfiguration(pluginId).then(config => {
+            document.getElementById("PrimaryUrl").value = config.PrimaryUrl || "";
+            document.getElementById("PrimaryModel").value = config.PrimaryModel || "";
+            document.getElementById("PrimarySystemPrompt").value = config.PrimarySystemPrompt || defaultPrompt;
+            document.getElementById("SecondaryUrl").value = config.SecondaryUrl || "";
+            document.getElementById("SecondaryModel").value = config.SecondaryModel || "";
+            document.getElementById("SecondarySystemPrompt").value = config.SecondarySystemPrompt || defaultPrompt;
+            document.getElementById("TimeoutMs").value = config.TimeoutMs || 3000;
+        });
+    }
+
+    function saveConfig(e) {
+        e.preventDefault();
+
+        const config = {
+            PrimaryUrl: document.getElementById("PrimaryUrl").value,
+            PrimaryModel: document.getElementById("PrimaryModel").value,
+            PrimarySystemPrompt: document.getElementById("PrimarySystemPrompt").value,
+            SecondaryUrl: document.getElementById("SecondaryUrl").value,
+            SecondaryModel: document.getElementById("SecondaryModel").value,
+            SecondarySystemPrompt: document.getElementById("SecondarySystemPrompt").value,
+            TimeoutMs: parseInt(document.getElementById("TimeoutMs").value) || 3000
+        };
+
+        ApiClient.updatePluginConfiguration(pluginId, config).then(() => {
+            Dashboard.alert("Settings saved.");
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        loadConfig();
+        document.getElementById("configForm").addEventListener("submit", saveConfig);
+    });
+</script>
