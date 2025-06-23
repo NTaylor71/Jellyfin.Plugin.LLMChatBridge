@@ -1,72 +1,82 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # ---------------------------
 # LLMChatBridge Build Script
 # ---------------------------
 
-set -e
+set -euo pipefail
 
-PluginName="LLMChatBridge"
-ProjectFile="Jellyfin.Plugin.$PluginName/Jellyfin.Plugin.$PluginName.csproj"
-BuildOutputDir="Jellyfin.Plugin.$PluginName/bin/Release/net8.0"
+PLUGIN_NAME="LLMChatBridge"
+PROJECT_FILE="Jellyfin.Plugin.${PLUGIN_NAME}/Jellyfin.Plugin.${PLUGIN_NAME}.csproj"
+BUILD_OUTPUT_DIR="Jellyfin.Plugin.${PLUGIN_NAME}/bin/Release/net8.0"
 
-echo -e "\033[0;36mBuilding $PluginName Plugin...\033[0m"
+# Ensure dotnet is installed and matches SDK requirement
+if ! command -v dotnet &>/dev/null; then
+    echo "ERROR: .NET SDK is not installed or not on PATH." >&2
+    exit 1
+fi
 
-# Load .env file
-if [ -f ".env" ]; then
-    echo -e "\033[0;90mLoading .env...\033[0m"
-    export $(grep -v '^#' .env | grep '=' | xargs)
+DOTNET_VERSION=$(dotnet --version)
+if [[ ! "$DOTNET_VERSION" =~ ^8\. ]] && [[ ! "$DOTNET_VERSION" =~ ^9\. ]]; then
+    echo "WARNING: Expected .NET SDK 8.x or compatible, but found $DOTNET_VERSION" >&2
+fi
+
+echo "Building ${PLUGIN_NAME} Plugin..."
+
+# Load environment variables from .env
+if [[ -f ".env" ]]; then
+    echo "Loading .env..."
+    while IFS='=' read -r key value; do
+        if [[ "$key" =~ ^# ]] || [[ -z "$key" ]]; then continue; fi
+        export "$key"="$(echo "$value" | sed -e 's/^ *//' -e 's/ *$//')"
+    done < <(grep '=' .env)
 else
-    echo -e "\033[0;31mERROR: .env file not found. Create a .env file with PLUGIN_MOUNT=\\\\your-nas\\plugin-path\033[0m"
+    echo "ERROR: .env file not found. Create a .env file with PLUGIN_MOUNT=//your-nas/plugin-path" >&2
     exit 1
 fi
 
 # Validate PLUGIN_MOUNT
-if [ -z "$PLUGIN_MOUNT" ]; then
-    echo -e "\033[0;31mERROR: PLUGIN_MOUNT is not set in .env.\033[0m"
+if [[ -z "${PLUGIN_MOUNT:-}" ]]; then
+    echo "ERROR: PLUGIN_MOUNT is not set in .env." >&2
     exit 1
 fi
 
-if [ ! -d "$PLUGIN_MOUNT" ]; then
-    echo -e "\033[0;31mERROR: PLUGIN_MOUNT path '$PLUGIN_MOUNT' does not exist or is not a directory.\033[0m"
+if [[ ! -d "$PLUGIN_MOUNT" ]]; then
+    echo "ERROR: PLUGIN_MOUNT path '$PLUGIN_MOUNT' does not exist or is not a directory." >&2
     exit 1
 fi
 
-TargetDir="$PLUGIN_MOUNT/$PluginName"
-echo -e "\033[0;36mResolved plugin root: $PLUGIN_MOUNT\033[0m"
-echo -e "\033[0;36mResolved target plugin path: $TargetDir\033[0m"
+TARGET_DIR="${PLUGIN_MOUNT}/${PLUGIN_NAME}"
+echo "Resolved plugin root: $PLUGIN_MOUNT"
+echo "Resolved target plugin path: $TARGET_DIR"
 
 # Clean + build
-echo -e "\033[0;36mRunning dotnet build...\033[0m"
-dotnet clean "$ProjectFile" > /dev/null
-if ! dotnet build "$ProjectFile" -c Release --nologo; then
-    echo -e "\033[0;31mERROR: Build failed. Check .csproj and plugin source.\033[0m"
+echo "Running dotnet build..."
+dotnet clean "$PROJECT_FILE" >/dev/null
+dotnet build "$PROJECT_FILE" -c Release --nologo
+
+if [[ $? -ne 0 ]]; then
+    echo "ERROR: Build failed. Check .csproj and plugin source." >&2
     exit 1
 fi
 
-echo -e "\033[0;32mBuild succeeded.\033[0m"
+echo "Build succeeded."
 
 # Validate build output
-if [ ! -d "$BuildOutputDir" ]; then
-    echo -e "\033[0;31mERROR: Build output directory '$BuildOutputDir' not found.\033[0m"
+if [[ ! -d "$BUILD_OUTPUT_DIR" ]]; then
+    echo "ERROR: Build output directory '$BUILD_OUTPUT_DIR' not found." >&2
     exit 1
 fi
 
 # Create plugin directory if it doesn't exist
-if [ ! -d "$TargetDir" ]; then
-    echo -e "\033[0;90mCreating plugin directory: $TargetDir\033[0m"
-    mkdir -p "$TargetDir" || {
-        echo -e "\033[0;31mERROR: Failed to create plugin directory at '$TargetDir'\033[0m"
-        exit 1
-    }
-fi
+mkdir -p "$TARGET_DIR"
 
 # Deploy plugin files
-echo -e "\033[1;33mCopying plugin files from: $BuildOutputDir\033[0m"
-for file in "$BuildOutputDir"/Jellyfin.Plugin."$PluginName".*; do
-    cp -f "$file" "$TargetDir"/
-    echo -e "\033[0;32mCopied: $(basename "$file") -> $TargetDir\033[0m"
+echo "Copying plugin files from: $BUILD_OUTPUT_DIR"
+for file in "$BUILD_OUTPUT_DIR"/Jellyfin.Plugin."$PLUGIN_NAME".*; do
+    cp "$file" "$TARGET_DIR/"
+    echo "Copied: $(basename "$file") -> $TARGET_DIR"
 done
 
-echo -e "\n\033[0;32mBuild and deployment complete.\033[0m"
-
+echo ""
+echo "Build and deployment complete."
