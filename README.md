@@ -88,9 +88,11 @@ or for powershell users
 
 ## The wider eco system
 
-This plugin is 1 of 3 components designed to add a RAG based prompt to Jellyfin that's an expert at your media collectoion and can make reccomendations to users, or help with their homework.
+This plugin is 1 of 3 components designed to add a RAG based prompt to Jellyfin that's an expert at your media collection and can make reccomendations to users via chat, ...or justhelp with their homework.
 
-Prompt replies will reflect the size of the model you can run anywhere on your local LAN
+Reply sophistication : Prompt replies will reflect the size of the model you can run anywhere on your local LAN
+
+Python fuzzywuzzy will attempt to match chat replies to local media 
 
 ### The 3 components of the eco system 
 

@@ -1,6 +1,7 @@
 .venv
 .env
-./Jellyfin.Plugin.LLMChatBridge/obj/*
-./Jellyfin.Plugin.LLMChatBridge/bin/*
-./old
+.idea/
 .vs
+Jellyfin.Plugin.LLMChatBridge/bin/
+Jellyfin.Plugin.LLMChatBridge/obj/
+old
